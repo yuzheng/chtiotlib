@@ -379,7 +379,7 @@ public class OpenIoTClientImpl implements OpenIoTClient {
 	}
 	
 	// --
-	public static interface Listener {
+	public interface Listener {
 		/**
 		 * Controller connect or disconnect status
 		 * 

@@ -9,54 +9,54 @@ import com.cht.iot.persistence.entity.data.Session;
 public interface OpenIoTClient {
 	// ======
 	   
-    public void setHost(String host);
+    void setHost(String host);
  
-    public void setHttpPort(int port);
+    void setHttpPort(int port);
    
-    public void setHttpsPort(int port);
+    void setHttpsPort(int port);
    
-    public void setMqttPort(int port);
+    void setMqttPort(int port);
    
     /**
     * This is a account key or project key
     *
      * @param apiKey
     */
-    public void setProjectKey(String projectKey);
+    void setProjectKey(String projectKey);
    
     /**
     * UDP/10400 to listen
     *
      * @param port
     */
-    public void setAnnouncementPort(int port);
+    void setAnnouncementPort(int port);
    
     /**
     * TCP/10400 to connect
     *
      * @param port
     */
-    public void setControllerPort(int port);  
+    void setControllerPort(int port);
    
     /**
     * To IoT platform & controller.
     *
      * @param timeout
     */
-    public void setTimeout(int timeout);
+    void setTimeout(int timeout);
    
     /**
     * This is an interval of 'Ping' command to controller.
     *
      * @param timeout
     */
-    public void setKeepAliveInterval(long timeout);
+    void setKeepAliveInterval(long timeout);
    
     // ======
    
-    public void start();
+    void start();
    
-    public void stop();
+    void stop();
    
     // ======
    
@@ -69,7 +69,7 @@ public interface OpenIoTClient {
     *
      *
      */
-    public List<Session> getSessions();
+    List<Session> getSessions();
    
     /**
     * Ask OpenIoTClient to establish the connection to controller in background.
@@ -81,7 +81,7 @@ public interface OpenIoTClient {
     * @param deviceId       keep the deviceId/sessionId -> Session, you'll know how to send the rawdata later.
     * @param sensorIds
     */
-    public void link(Session session, String apiKey, String deviceId, String[] sensorIds);
+    void link(Session session, String apiKey, String deviceId, String[] sensorIds);
    
     // ======
    
@@ -102,7 +102,7 @@ public interface OpenIoTClient {
     * @param sensorId
     * @param value
     */
-    public void saveRawdata(String deviceId, String sensorId, String[] value);
+    void saveRawdata(String deviceId, String sensorId, String[] value);
    
     /**
     * Read the rawdata from local controller or IoT platform.
@@ -113,7 +113,7 @@ public interface OpenIoTClient {
     * @param sensor
     * @return
     */
-    public Rawdata getRawdata(String deviceId, String sensorId);
+    Rawdata getRawdata(String deviceId, String sensorId);
    
    
     /*
@@ -138,7 +138,7 @@ public interface OpenIoTClient {
      * @param deviceId
     * @param sensorId
     */
-    public void subscribe(String deviceId, String sensorId);
+    void subscribe(String deviceId, String sensorId);
    
     /**
     * By default, OpenIoTClient will connect to MQTT broker to listen the rawdata changed message.
@@ -146,7 +146,7 @@ public interface OpenIoTClient {
      * @author rickwang
     *
     */
-    public static interface Callback {
+    interface Callback {
        void onRawdata(Rawdata rawdata);
        void onHeartBeat(HeartBeat heartbeat);
     }

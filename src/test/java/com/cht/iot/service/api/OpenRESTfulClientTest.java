@@ -36,7 +36,8 @@ public class OpenRESTfulClientTest {
 	
 	final Random random = new Random(System.currentTimeMillis());
 	
-	public OpenRESTfulClientTest() {		
+	public OpenRESTfulClientTest() {
+		
 	}
 	
 	protected String now() {		
