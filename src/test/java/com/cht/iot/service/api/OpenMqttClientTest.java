@@ -8,7 +8,7 @@ import com.cht.iot.persistence.entity.data.Rawdata;
 import com.cht.iot.service.api.OpenMqttClient.Listener;
 
 public class OpenMqttClientTest {
-	String host = "iot.cht.com.tw";
+	String host = "iot.epa.gov.tw";
 	int port = 1883;//8883;//1883;
 	String apiKey = "PK1G27KG0PUFFTGBX0";		// CHANGE TO YOUR PROJECT API KEY
 	String serialId = "001002003004005";	// CHANGE TO YOUR EQUIPMENT SERIAL NUMBER

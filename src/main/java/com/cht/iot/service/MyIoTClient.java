@@ -45,7 +45,7 @@ public class MyIoTClient {
 	private OpenMqttClient mqtt;
 	private OpenMulticastClient multicast;
 	
-	private String host = "iot.cht.com.tw";
+	private String host = "iot.epa.gov.tw";
 	
 	private String apiKey; // CHANGE TO YOUR PROJECT API KEY
 	private String multicastAddress = "224.144.77.1";
