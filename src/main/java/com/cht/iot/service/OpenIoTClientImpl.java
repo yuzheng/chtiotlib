@@ -41,7 +41,7 @@ public class OpenIoTClientImpl implements OpenIoTClient {
 	OpenRESTfulClient restful;
 	ControllerClientBuilder builder;
 	
-	String host = "iot.cht.com.tw";
+	String host = "iot.epa.gov.tw";
 	int httpPort = 80;
 	int httpsPort = 443;
 	int mqttPort = 1883;
@@ -379,7 +379,7 @@ public class OpenIoTClientImpl implements OpenIoTClient {
 	}
 	
 	// --
-	public static interface Listener {
+	public interface Listener {
 		/**
 		 * Controller connect or disconnect status
 		 * 

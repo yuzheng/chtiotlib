@@ -45,7 +45,7 @@ public class MyIoTClient {
 	private OpenMqttClient mqtt;
 	private OpenMulticastClient multicast;
 	
-	private String host = "iot.cht.com.tw";
+	private String host = "iot.epa.gov.tw";
 	
 	private String apiKey; // CHANGE TO YOUR PROJECT API KEY
 	private String multicastAddress = "224.144.77.1";
@@ -664,7 +664,7 @@ public class MyIoTClient {
 	}
 	
 	// ...
-	public static interface Listener {
+	public interface Listener {
 		
 		/**
 		 * The value changed of the sensor.
@@ -672,7 +672,7 @@ public class MyIoTClient {
 		 * @param topic
 		 * @param rawdata
 		 */
-		public void onRawdata(String topic, Rawdata rawdata);
+		void onRawdata(String topic, Rawdata rawdata);
 		
 		/**
 		 * The device/sensor reconfiguration event from server.
@@ -680,7 +680,7 @@ public class MyIoTClient {
 		 * @param topic
 		 * @param apiKey
 		 */
-		public void onReconfigure(String topic, String apiKey);
+		void onReconfigure(String topic, String apiKey);
 		
 		/**
 		 * The re-assigned device ID from server.
@@ -689,7 +689,7 @@ public class MyIoTClient {
 		 * @param apiKey
 		 * @param deviceId
 		 */
-		public void onSetDeviceId(String topic, String apiKey, String deviceId);
+		void onSetDeviceId(String topic, String apiKey, String deviceId);
 	}
 	
 	public static class ListenerAdapter implements Listener {

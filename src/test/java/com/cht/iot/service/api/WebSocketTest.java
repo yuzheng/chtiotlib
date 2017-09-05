@@ -71,7 +71,7 @@ public class WebSocketTest {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		String host = "iot.cht.com.tw";
+		String host = "iot.epa.gov.tw";
 		int port = 80;
 		String apiKey = "H5T40KG55AWAA9U4";	// CHANGE TO YOUR PROJECT API KEY
 		

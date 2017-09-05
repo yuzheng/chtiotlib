@@ -293,14 +293,14 @@ public class OpenMulticastClient {
 	
 	// ======
 	
-	public static interface Listener {
+	public interface Listener {
 		/**
 		 * The value changed of the sensor.
 		 * 
 		 * @param topic
 		 * @param rawdata
 		 */
-		public void onRawdata(String topic, Rawdata rawdata);
+		void onRawdata(String topic, Rawdata rawdata);
 	}
 	
 	public static class ListenerAdapter implements Listener {

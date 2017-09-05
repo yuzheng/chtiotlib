@@ -434,7 +434,7 @@ public class ControllerClient {
 		}
 	}
 	
-	public static interface Listener {
+	public interface Listener {
 		/**
 		 * Controller sends the value changed message.
 		 * 
@@ -444,7 +444,7 @@ public class ControllerClient {
 		 */
 		void onValueChanged(String deviceId, String sensorId, String[] value);
 		
-		public void onLinkStatusChanged(String communication, String status, String message);
+		void onLinkStatusChanged(String communication, String status, String message);
 	}
 	
 	static class EmptyListener implements Listener {

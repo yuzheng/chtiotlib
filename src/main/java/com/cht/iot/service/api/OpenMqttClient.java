@@ -28,6 +28,7 @@ import com.cht.iot.persistence.entity.data.Rawdata;
 import com.cht.iot.util.JsonUtils;
 
 /*
+ * 20170905: Command, Ack 
  * 20160817: HeartBeat (subscribe, onHeartBeat)
  */
 
@@ -335,7 +336,7 @@ public class OpenMqttClient {
 		command.setId(sensorId);
 		command.setCmd(cmd);
 		
-		Action a = new Action(Action.Method.save, topic, command);
+		Action a = new Action(Action.Method.command, topic, command);
 		actions.offer(a);
 	}
 	
@@ -353,7 +354,7 @@ public class OpenMqttClient {
 		ack.setId(sensorId);
 		ack.setAck(msg);
 		
-		Action a = new Action(Action.Method.save, topic, ack);
+		Action a = new Action(Action.Method.ack, topic, ack);
 		actions.offer(a);
 	}
 	
