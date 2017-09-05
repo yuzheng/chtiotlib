@@ -21,6 +21,8 @@ import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cht.iot.persistence.entity.data.Ack;
+import com.cht.iot.persistence.entity.data.Command;
 import com.cht.iot.persistence.entity.data.HeartBeat;
 import com.cht.iot.persistence.entity.data.Rawdata;
 import com.cht.iot.util.JsonUtils;
@@ -134,6 +136,42 @@ public class OpenMqttClient {
 	}
 	
 	/**
+	 * The topic we want to receive the value changed event for the specified sensor.
+	 * 
+	 * [Deprecated] will be only used inside this class.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @return
+	 */
+	@Deprecated
+	public static final String getCommandTopic(String deviceId, String sensorId) {
+		return String.format("/v1/device/%s/sensor/%s/command", deviceId, sensorId);
+	}
+	
+	protected static final String getSavingCommandTopic(String deviceId) {
+		return String.format("/v1/device/%s/command", deviceId);
+	}
+	
+	/**
+	 * The topic we want to receive the value changed event for the specified sensor.
+	 * 
+	 * [Deprecated] will be only used inside this class.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @return
+	 */
+	@Deprecated
+	public static final String getAckTopic(String deviceId, String sensorId) {
+		return String.format("/v1/device/%s/sensor/%s/ack", deviceId, sensorId);
+	}
+	
+	protected static final String getSavingAckTopic(String deviceId) {
+		return String.format("/v1/device/%s/ack", deviceId);
+	}
+	
+	/**
 	 * The topic we want to receive the register event for the specified product serial number.
 	 * 
 	 * [Deprecated] will be only used inside this class.
@@ -150,8 +188,17 @@ public class OpenMqttClient {
 		return String.format("/v1/device/%s/heartbeat", deviceId);
 	}
 	
+	
 	protected Rawdata toRawdata(String json) {
 		return JsonUtils.fromJson(json, Rawdata.class);
+	}
+	
+	protected Command toCommand(String json) {
+		return JsonUtils.fromJson(json, Command.class);
+	}
+	
+	protected Ack toAck(String json) {
+		return JsonUtils.fromJson(json, Ack.class);
 	}
 	
 	protected HeartBeat toHeartBeat(String json) {
@@ -179,6 +226,24 @@ public class OpenMqttClient {
 	 */
 	public void subscribe(String deviceId, String sensorId) {
 		String topic = getRawdataTopic(deviceId, sensorId);
+		
+		if (topics.add(topic)) { // newbie ?
+			Action a = new Action(Action.Method.subscribe, topic);
+			actions.offer(a);
+		}
+	}
+	
+	public void subscribeCommand(String deviceId, String sensorId) {
+		String topic = getCommandTopic(deviceId, sensorId);
+		
+		if (topics.add(topic)) { // newbie ?
+			Action a = new Action(Action.Method.subscribe, topic);
+			actions.offer(a);
+		}
+	}
+	
+	public void subscribeAck(String deviceId, String sensorId) {
+		String topic = getAckTopic(deviceId, sensorId);
 		
 		if (topics.add(topic)) { // newbie ?
 			Action a = new Action(Action.Method.subscribe, topic);
@@ -257,6 +322,42 @@ public class OpenMqttClient {
 	}
 	
 	/**
+	 * Save the command into IoT platform.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @param value
+	 */
+	public void command(String deviceId, String sensorId, String cmd) {
+		String topic = getSavingCommandTopic(deviceId);
+		
+		Command command = new Command();
+		command.setId(sensorId);
+		command.setCmd(cmd);
+		
+		Action a = new Action(Action.Method.save, topic, command);
+		actions.offer(a);
+	}
+	
+	/**
+	 * Save the ack into IoT platform.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @param value
+	 */
+	public void ack(String deviceId, String sensorId, String msg) {
+		String topic = getSavingAckTopic(deviceId);
+		
+		Ack ack = new Ack();
+		ack.setId(sensorId);
+		ack.setAck(msg);
+		
+		Action a = new Action(Action.Method.save, topic, ack);
+		actions.offer(a);
+	}
+	
+	/**
 	 * publish the heartbeat into IoT platform.
 	 * 
 	 * @param deviceId
@@ -325,6 +426,12 @@ public class OpenMqttClient {
 					if(topic.endsWith("/heartbeat")){
 						HeartBeat heartbeat = toHeartBeat(json);
 						listener.onHeartBeat(topic, heartbeat);
+					}else if(topic.endsWith("/command")) {
+						Command command = toCommand(json);
+						listener.onCommand(topic, command);
+					}else if(topic.endsWith("/ack")) {
+						Ack ack = toAck(json);
+						listener.onAck(topic, ack);
 					}else{
 						Rawdata rawdata = toRawdata(json);
 						listener.onRawdata(topic, rawdata);
@@ -410,6 +517,16 @@ public class OpenMqttClient {
 									
 									String json = toJson(new Rawdata[] { a.rawdata });
 									mt.publish(json.getBytes("UTF-8"), QOS_1, false);
+								} else if (a.method == Action.Method.command) {
+									MqttTopic mt = client.getTopic(a.topic);
+									
+									String json = toJson(new Command[] { a.command });
+									mt.publish(json.getBytes("UTF-8"), QOS_1, false);
+								} else if (a.method == Action.Method.ack) {
+									MqttTopic mt = client.getTopic(a.topic);
+									
+									String json = toJson(new Ack[] { a.ack });
+									mt.publish(json.getBytes("UTF-8"), QOS_1, false);
 								} else if (a.method == Action.Method.heartbeat) {
 									MqttTopic mt = client.getTopic(a.topic);
 									
@@ -453,6 +570,8 @@ public class OpenMqttClient {
 		String topic;
 		int pulse;
 		Rawdata rawdata;
+		Command command;
+		Ack ack;
 		
 		public Action(Method method, String topic) {
 			this.method = method;
@@ -465,6 +584,18 @@ public class OpenMqttClient {
 			this.rawdata = rawdata;
 		}
 		
+		public Action(Method method, String topic, Command command) {
+			this.method = method;
+			this.topic = topic;			
+			this.command = command;
+		}
+		
+		public Action(Method method, String topic, Ack ack) {
+			this.method = method;
+			this.topic = topic;			
+			this.ack = ack;
+		}
+		
 		// for heartbeat
 		public Action(Method method, String topic, int pulse) {
 			this.method = method;
@@ -473,7 +604,7 @@ public class OpenMqttClient {
 		}
 		
 		enum Method {
-			subscribe, unsubscribe, save, heartbeat
+			subscribe, unsubscribe, save, command, ack, heartbeat
 		}
 	}
 	
@@ -514,7 +645,7 @@ public class OpenMqttClient {
 		}
 	}
 
-	public static interface Listener {
+	public interface Listener {
 		
 		/**
 		 * The value changed of the sensor.
@@ -522,7 +653,23 @@ public class OpenMqttClient {
 		 * @param topic
 		 * @param rawdata
 		 */
-		public void onRawdata(String topic, Rawdata rawdata);
+		void onRawdata(String topic, Rawdata rawdata);
+		
+		/**
+		 * The command changed of the sensor.
+		 * 
+		 * @param topic
+		 * @param rawdata
+		 */
+		public void onCommand(String topic, Command command);
+		
+		/**
+		 * The ack changed of the sensor.
+		 * 
+		 * @param topic
+		 * @param rawdata
+		 */
+		public void onAck(String topic, Ack ack);
 		
 		
 		/**
@@ -531,7 +678,7 @@ public class OpenMqttClient {
 		 * @param topic
 		 * @param heatbeat
 		 */
-		public void onHeartBeat(String topic, HeartBeat heatbeat);
+		void onHeartBeat(String topic, HeartBeat heatbeat);
 		
 		/**
 		 * The device/sensor reconfiguration event from server.
@@ -539,7 +686,7 @@ public class OpenMqttClient {
 		 * @param topic
 		 * @param apiKey
 		 */
-		public void onReconfigure(String topic, String apiKey);
+		void onReconfigure(String topic, String apiKey);
 		
 		/**
 		 * The re-assigned device ID from server.
@@ -548,12 +695,20 @@ public class OpenMqttClient {
 		 * @param apiKey
 		 * @param deviceId
 		 */
-		public void onSetDeviceId(String topic, String apiKey, String deviceId);
+		void onSetDeviceId(String topic, String apiKey, String deviceId);
 	}
 	
 	public static class ListenerAdapter implements Listener {
 		@Override
 		public void onRawdata(String topic, Rawdata rawdata) {
+		}
+		
+		@Override
+		public void onCommand(String topic, Command command) {
+		}
+		
+		@Override
+		public void onAck(String topic, Ack ack) {
 		}
 		
 		@Override

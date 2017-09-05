@@ -3,12 +3,14 @@ package com.cht.iot.service.api;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Test;
 
+import com.cht.iot.persistence.entity.data.Ack;
+import com.cht.iot.persistence.entity.data.Command;
 import com.cht.iot.persistence.entity.data.HeartBeat;
 import com.cht.iot.persistence.entity.data.Rawdata;
 import com.cht.iot.service.api.OpenMqttClient.Listener;
 
 public class OpenMqttClientTest {
-	String host = "iot.cht.com.tw";
+	String host = "iot.epa.gov.tw";
 	int port = 1883;//8883;//1883;
 	String apiKey = "PK1G27KG0PUFFTGBX0";		// CHANGE TO YOUR PROJECT API KEY
 	String serialId = "001002003004005";	// CHANGE TO YOUR EQUIPMENT SERIAL NUMBER
@@ -23,12 +25,24 @@ public class OpenMqttClientTest {
 		
 		//mqc.register(serialId); // '/v1/registry/001002003004005'
 		mqc.subscribe(deviceId, sensorId); // '/v1/device/25/sensor/sensor-0/rawdata'
+		mqc.subscribeCommand(deviceId, sensorId);
+		mqc.subscribeAck(deviceId, sensorId);
 		mqc.subscribeHeartbeat(deviceId);
 		
 		mqc.setListener(new Listener() {
 			@Override
 			public void onRawdata(String topic, Rawdata rawdata) {
 				System.out.printf("Rawdata - deviceId: %s, id: %s, time: %s, value: %s\n", rawdata.getDeviceId(), rawdata.getId(), rawdata.getTime(), rawdata.getValue()[0]);				
+			}
+			
+			@Override
+			public void onCommand(String topic, Command command) {
+				System.out.printf("Command - deviceId: %s, id: %s, time: %s, value: %s\n", command.getDeviceId(), command.getId(), command.getTime(), command.getCmd());				
+			}
+			
+			@Override
+			public void onAck(String topic, Ack ack) {
+				System.out.printf("Ack - deviceId: %s, id: %s, time: %s, value: %s\n", ack.getDeviceId(), ack.getId(), ack.getTime(), ack.getAck());				
 			}
 			
 			@Override
