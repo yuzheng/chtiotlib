@@ -7,6 +7,7 @@ import com.cht.iot.persistence.entity.data.Ack;
 import com.cht.iot.persistence.entity.data.Command;
 import com.cht.iot.persistence.entity.data.HeartBeat;
 import com.cht.iot.persistence.entity.data.Rawdata;
+import com.cht.iot.persistence.entity.data.Result;
 import com.cht.iot.service.api.OpenMqttClient.Listener;
 
 public class OpenMqttClientTest {
@@ -19,15 +20,16 @@ public class OpenMqttClientTest {
 	String sensorId = "button";				// CHANGE TO YOUR SENSOR ID
 	
 	@Test
-	public void testMulti()throws Exception {
+	public void testMulti() {
+		try{
 		OpenMqttClient mqc1 = new OpenMqttClient(host, 1883, "DKPWWEMFPGX7C2571M", false);
-		OpenMqttClient mqc2 = new OpenMqttClient(host, 1883, "DKAEZE792XM93U9HWM", false);
+		OpenMqttClient mqc2 = new OpenMqttClient(host, 1883, "DKCK19WTYWAZPTX1BR", false);
 		
 		mqc1.subscribe("276664437", "aaa");
-		mqc2.subscribe("281494258", "light");
+		mqc2.subscribe("285283124", "light");
 		
 		mqc1.subscribeHeartbeat("276664437");
-		mqc2.subscribeHeartbeat("281494258");
+		mqc2.subscribeHeartbeat("285283124");
 		
 		mqc1.setListener(new Listener() {
 			@Override
@@ -58,6 +60,11 @@ public class OpenMqttClientTest {
 			@Override
 			public void onSetDeviceId(String topic, String apiKey, String deviceId) {
 				System.out.printf("SetDeviceId - topic: %s, apiKey: %s, deviceId: %s\n", topic, apiKey, deviceId);
+			}
+			
+			@Override
+			public void onFail(String topic, Result result) {
+				System.out.printf("Fail - topic: %s, message: %s\n", topic, result.getMessage());
 			}
 		});
 		
@@ -91,6 +98,11 @@ public class OpenMqttClientTest {
 			public void onSetDeviceId(String topic, String apiKey, String deviceId) {
 				System.out.printf("SetDeviceId - topic: %s, apiKey: %s, deviceId: %s\n", topic, apiKey, deviceId);
 			}
+			
+			@Override
+			public void onFail(String topic, Result result) {
+				System.out.printf("Fail - topic: %s, message: %s\n", topic, result.getMessage());
+			}
 		});
 		mqc2.start(); // wait for incoming message
 		mqc1.start(); // wait for incoming message
@@ -98,16 +110,19 @@ public class OpenMqttClientTest {
 		
 		Thread.sleep(2000L);
 		mqc1.heartbeat("276664437", 10000);
-		mqc2.heartbeat("281494258", 10000);
+		mqc2.heartbeat("285283124", 10000);
 		for (;;) {			
 			Thread.sleep(2000L);
 			
 			String[] value = new String[] { RandomStringUtils.randomNumeric(5) };			
 			mqc1.save("276664437", "aaa", value); // change the rawdata
 			String[] value3 = new String[] { RandomStringUtils.randomNumeric(5) };			
-			mqc2.save("281494258", "light", value3); // change the rawdata
+			mqc2.save("285283124", "light", value3); // change the rawdata
 		}
 		
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	@Test
@@ -150,6 +165,11 @@ public class OpenMqttClientTest {
 			@Override
 			public void onSetDeviceId(String topic, String apiKey, String deviceId) {
 				System.out.printf("SetDeviceId - topic: %s, apiKey: %s, deviceId: %s\n", topic, apiKey, deviceId);
+			}
+			
+			@Override
+			public void onFail(String topic, Result result) {
+				System.out.printf("Fail - topic: %s, message: %s\n", topic, result.getMessage());
 			}
 		});
 		

@@ -25,6 +25,7 @@ import com.cht.iot.persistence.entity.data.Ack;
 import com.cht.iot.persistence.entity.data.Command;
 import com.cht.iot.persistence.entity.data.HeartBeat;
 import com.cht.iot.persistence.entity.data.Rawdata;
+import com.cht.iot.persistence.entity.data.Result;
 import com.cht.iot.util.JsonUtils;
 
 /*
@@ -208,6 +209,14 @@ public class OpenMqttClient {
 	
 	protected Provision toProvision(String json) {
 		return JsonUtils.fromJson(json, Provision.class);
+	}
+	
+	protected Result toResult(String json) {
+		try{
+			return JsonUtils.fromJson(json, Result.class);
+		}catch (Exception e){
+			return null;
+		}
 	}
 	
 	protected String toJson(Rawdata[] rawdata) {
@@ -423,31 +432,38 @@ public class OpenMqttClient {
 			@Override
 			public void messageArrived(String topic, MqttMessage message) throws Exception {
 				String json = new String(message.getPayload(), "UTF-8");
-				if (topic.startsWith("/v1/device/")) {
-					if(topic.endsWith("/heartbeat")){
-						HeartBeat heartbeat = toHeartBeat(json);
-						listener.onHeartBeat(topic, heartbeat);
-					}else if(topic.endsWith("/command")) {
-						Command command = toCommand(json);
-						listener.onCommand(topic, command);
-					}else if(topic.endsWith("/ack")) {
-						Ack ack = toAck(json);
-						listener.onAck(topic, ack);
-					}else{
-						Rawdata rawdata = toRawdata(json);
-						listener.onRawdata(topic, rawdata);
-					}
-					
-				} else if (topic.startsWith("/v1/registry/")) {
-					Provision provision = toProvision(json);
-					Provision.Op op = provision.getOp();
-					if (op == Provision.Op.Reconfigure) {
-						listener.onReconfigure(topic, provision.getCk());
+				
+				// 2017.10.05 add for handle fail message
+				Result result = toResult(json);
+				if(result != null && !result.isResult()) {
+					listener.onFail(topic, result);
+				}else{
+					if (topic.startsWith("/v1/device/")) {
+						if(topic.endsWith("/heartbeat")){
+							HeartBeat heartbeat = toHeartBeat(json);
+							listener.onHeartBeat(topic, heartbeat);
+						}else if(topic.endsWith("/command")) {
+							Command command = toCommand(json);
+							listener.onCommand(topic, command);
+						}else if(topic.endsWith("/ack")) {
+							Ack ack = toAck(json);
+							listener.onAck(topic, ack);
+						}else{
+							Rawdata rawdata = toRawdata(json);
+							listener.onRawdata(topic, rawdata);
+						}
 						
-					} else if (op == Provision.Op.SetDeviceId) {
-						listener.onSetDeviceId(topic, provision.getCk(), provision.getDeviceId());
+					} else if (topic.startsWith("/v1/registry/")) {
+						Provision provision = toProvision(json);
+						Provision.Op op = provision.getOp();
+						if (op == Provision.Op.Reconfigure) {
+							listener.onReconfigure(topic, provision.getCk());
+							
+						} else if (op == Provision.Op.SetDeviceId) {
+							listener.onSetDeviceId(topic, provision.getCk(), provision.getDeviceId());
+						}
 					}
-				}				
+				}
 			}
 			
 			@Override
@@ -697,6 +713,14 @@ public class OpenMqttClient {
 		 * @param deviceId
 		 */
 		void onSetDeviceId(String topic, String apiKey, String deviceId);
+		
+		/**
+		 * The mqtt fail message
+		 * 
+		 * @param topic
+		 * @param result
+		 */
+		void onFail(String topic, Result result);
 	}
 	
 	public static class ListenerAdapter implements Listener {
@@ -714,7 +738,6 @@ public class OpenMqttClient {
 		
 		@Override
 		public void onHeartBeat(String topic, HeartBeat heatbeat) {
-			
 		}
 		
 		@Override
@@ -723,6 +746,10 @@ public class OpenMqttClient {
 		
 		@Override
 		public void onSetDeviceId(String topic, String apiKey, String deviceId) {
+		}
+		
+		@Override
+		public void onFail(String topic, Result result) {
 		}
 	}
 }
