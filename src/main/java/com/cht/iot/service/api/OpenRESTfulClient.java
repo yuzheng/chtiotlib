@@ -35,6 +35,7 @@ import com.cht.iot.persistence.entity.api.IIdStatus;
 import com.cht.iot.persistence.entity.api.IProvision;
 import com.cht.iot.persistence.entity.api.ISensor;
 import com.cht.iot.persistence.entity.api.ISheet;
+import com.cht.iot.persistence.entity.api.IThing;
 import com.cht.iot.persistence.entity.data.Ack;
 import com.cht.iot.persistence.entity.data.Command;
 import com.cht.iot.persistence.entity.data.Health;
@@ -1051,6 +1052,15 @@ public class OpenRESTfulClient {
 		GetMethod gm = new GetMethod(url);
 		
 		return JsonUtils.fromJson(http(gm), Health.class);
+	}
+	
+	// ======
+	public IThing[] getThings() throws IOException {
+		//
+		String url = String.format("%s://%s:%d/iot/v1/thing", protocol, host, port);
+		
+		GetMethod gm = new GetMethod(url);
+		return JsonUtils.fromJson(http(gm), IThing[].class);
 	}
 	
 	// ======
