@@ -27,10 +27,10 @@ import com.cht.iot.util.JsonUtils;
 public class OpenRESTfulClientTest {
 	static final Logger LOG = LoggerFactory.getLogger(OpenRESTfulClientTest.class);	
 	
-	final String host = "iot.cht.com.tw";
-	final int port = 443;//80
+	final String host = "localhost";//"iot.cht.com.tw";
+	final int port = 8081;//443;//80
 	final int timeout = 5000;
-	final String apiKey = "PKRNA6KCXBZ1JE78P0";	// CHANGE TO YOUR PROJECT API KEY
+	final String apiKey = "PKMZH2M0EXK7XWY51C";//"PKRNA6KCXBZ1JE78P0";	// CHANGE TO YOUR PROJECT API KEY
 	
 	final OpenRESTfulClient client = new OpenRESTfulClient(host, port, apiKey);
 	
@@ -93,7 +93,7 @@ public class OpenRESTfulClientTest {
 		isensor.setDesc("My Temperature");			
 		isensor.setType("guage");
 		isensor.setUri("http://a.b.c.d/hygrometer/temperature");
-		isensor.setUnit("摨�");
+		isensor.setUnit("度");
 		//isensor.setFormula("${value} / 100.0"); // not yet supported			
 		
 		IAttribute[] attributes = new IAttribute[] {
@@ -162,6 +162,13 @@ public class OpenRESTfulClientTest {
 		value.put("run", "32767");
 		
 		return value;
+	}
+	
+	@Test
+	public void testOne() throws Exception {
+		System.out.println("1. Get the Sensor");
+		ISensor qsensor = client.getSensor("115355", "cin");
+		System.out.println("name:"+qsensor.getName());
 	}
 	
 	@Test
