@@ -384,7 +384,7 @@ public class OpenMqttClient {
 			MqttClientPersistence mcp = new MqttDefaultFilePersistence(System.getProperty("java.io.tmpdir")); // should not be null
 		
 			while (thread != null) {
-				LOG.info("Connect to MQTT broker - " + url);
+				//LOG.info("Connect to MQTT broker - " + url);
 
 				try {
 					String clientId = RandomStringUtils.randomAlphanumeric(23); // max bytes of client id is 23

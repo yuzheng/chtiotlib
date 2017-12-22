@@ -8,16 +8,18 @@ import com.cht.iot.persistence.entity.data.Rawdata;
 import com.cht.iot.service.api.OpenMqttClient.Listener;
 
 public class OpenMqttClientTest {
-	String host = "iot.epa.gov.tw";
+	String host = "iot.cht.com.tw";
 	int port = 1883;//8883;//1883;
 	String apiKey = "PK1G27KG0PUFFTGBX0";		// CHANGE TO YOUR PROJECT API KEY
 	String serialId = "001002003004005";	// CHANGE TO YOUR EQUIPMENT SERIAL NUMBER
 	
 	String deviceId = "388622157";					// CHANGE TO YOUR DEVICE ID
 	String sensorId = "button";				// CHANGE TO YOUR SENSOR ID
-	
+
+
 	@Test
 	public void test() throws Exception {
+
 		//OpenMqttClient mqc = new OpenMqttClient(host, port, apiKey);
 		OpenMqttClient mqc = new OpenMqttClient(host, 8883, apiKey, true);
 		
@@ -56,5 +58,7 @@ public class OpenMqttClientTest {
 			String[] value = new String[] { RandomStringUtils.randomNumeric(5) };			
 			mqc.save(deviceId, sensorId, value); // change the rawdata
 		}
+
 	}
+
 }
