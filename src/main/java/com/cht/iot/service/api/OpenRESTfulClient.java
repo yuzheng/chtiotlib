@@ -35,6 +35,9 @@ import com.cht.iot.persistence.entity.api.IIdStatus;
 import com.cht.iot.persistence.entity.api.IProvision;
 import com.cht.iot.persistence.entity.api.ISensor;
 import com.cht.iot.persistence.entity.api.ISheet;
+import com.cht.iot.persistence.entity.api.IThing;
+import com.cht.iot.persistence.entity.data.Ack;
+import com.cht.iot.persistence.entity.data.Command;
 import com.cht.iot.persistence.entity.data.Health;
 import com.cht.iot.persistence.entity.data.HeartBeat;
 import com.cht.iot.persistence.entity.data.Rawdata;
@@ -454,6 +457,207 @@ public class OpenRESTfulClient {
 	}
 	
 	// ======
+	/**
+	 * 
+	 * @param command
+	 * @throws IOException
+	 */
+	public void saveCommand(Command command) throws IOException {
+		if(command.getDeviceId().length() > 0){
+			String url = String.format("%s://%s:%d/iot/v1/device/%s/command", protocol, host, port, command.getDeviceId());
+				
+			PostMethod pm = new PostMethod(url);
+			String json = JsonUtils.toJson(new Command[] { command });
+				
+			post(pm, json);
+		}else{
+			LOG.warn("Unable save rawdata, deviceId is empty!");
+		}
+	}
+	
+	/**
+	 * Get the latest command of the sensor.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @return
+	 * @throws IOException
+	 */
+	public Command getCommand(String deviceId, String sensorId) throws IOException {
+		String url = String.format("%s://%s:%d/iot/v1/device/%s/sensor/%s/command", protocol, host, port, deviceId, sensorId);
+		
+		GetMethod gm = new GetMethod(url);
+		return JsonUtils.fromJson(http(gm), Command.class);
+	}
+	
+	/**
+	 * Get the command from the data store.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @param start			ISO-8601 timestamp.
+	 * @param end			[optional]
+	 * @param interval		[optional] sampling interval in minute. Not yet supported.
+	 * @return
+	 * @throws IOException
+	 */
+	public Command[] getCommands(String deviceId, String sensorId, String start, String end, Integer interval) throws IOException {
+		if (start == null) {
+			throw new IOException("You must specify the start timestamp");
+		}		
+		start = encode(start);	
+		
+		StringBuilder sb = new StringBuilder(String.format("%s://%s:%d/iot/v1/device/%s/sensor/%s/command?start=%s&", protocol, host, port, deviceId, sensorId, start));
+		if (end != null) {
+			end = encode(end);
+			sb.append("end=");
+			sb.append(end);
+			sb.append('&');
+		}
+		
+		if (interval != null) {
+			sb.append("interval=");
+			sb.append(interval);
+			sb.append('&');
+		}
+		
+		String url = sb.substring(0, sb.length() - 1);
+		
+		GetMethod gm = new GetMethod(url);
+		return JsonUtils.fromJson(http(gm), Command[].class);		
+	}
+	
+	/**
+	 * Delete the command.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @param start			ISO-8601 timestamp.
+	 * @param end			[optional]
+	 * @throws IOException
+	 */
+	public void deleteCommand(String deviceId, String sensorId, String start, String end) throws IOException {
+		if (start == null) {
+			throw new IOException("You must specify the start timestamp");
+		}
+		start = encode(start);
+		
+		StringBuilder sb = new StringBuilder(String.format("%s://%s:%d/iot/v1/device/%s/sensor/%s/command?start=%s&", protocol, host, port, deviceId, sensorId, start));
+		if (end != null) {
+			end = encode(end);
+			sb.append("end=");
+			sb.append(end);
+			sb.append('&');
+		}
+		
+		String url = sb.substring(0, sb.length() - 1);
+		
+		DeleteMethod dm = new DeleteMethod(url);
+		http(dm);
+	}
+	
+	// ======
+
+	/**
+	 * 
+	 * @param ack
+	 * @throws IOException
+	 */
+	public void saveAck(Ack ack) throws IOException {
+		if(ack.getDeviceId().length() > 0){
+			String url = String.format("%s://%s:%d/iot/v1/device/%s/ack", protocol, host, port, ack.getDeviceId());
+				
+			PostMethod pm = new PostMethod(url);
+			String json = JsonUtils.toJson(new Ack[] { ack });
+				
+			post(pm, json);
+		}else{
+			LOG.warn("Unable save rawdata, deviceId is empty!");
+		}
+	}
+	
+	/**
+	 * Get the latest ack of the sensor.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @return
+	 * @throws IOException
+	 */
+	public Ack getAck(String deviceId, String sensorId) throws IOException {
+		String url = String.format("%s://%s:%d/iot/v1/device/%s/sensor/%s/ack", protocol, host, port, deviceId, sensorId);
+		
+		GetMethod gm = new GetMethod(url);
+		return JsonUtils.fromJson(http(gm), Ack.class);
+	}
+	
+	/**
+	 * Get the ack from the data store.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @param start			ISO-8601 timestamp.
+	 * @param end			[optional]
+	 * @param interval		[optional] sampling interval in minute. Not yet supported.
+	 * @return
+	 * @throws IOException
+	 */
+	public Ack[] getAcks(String deviceId, String sensorId, String start, String end, Integer interval) throws IOException {
+		if (start == null) {
+			throw new IOException("You must specify the start timestamp");
+		}		
+		start = encode(start);	
+		
+		StringBuilder sb = new StringBuilder(String.format("%s://%s:%d/iot/v1/device/%s/sensor/%s/ack?start=%s&", protocol, host, port, deviceId, sensorId, start));
+		if (end != null) {
+			end = encode(end);
+			sb.append("end=");
+			sb.append(end);
+			sb.append('&');
+		}
+		
+		if (interval != null) {
+			sb.append("interval=");
+			sb.append(interval);
+			sb.append('&');
+		}
+		
+		String url = sb.substring(0, sb.length() - 1);
+		
+		GetMethod gm = new GetMethod(url);
+		return JsonUtils.fromJson(http(gm), Ack[].class);		
+	}
+	
+	/**
+	 * Delete the Ack.
+	 * 
+	 * @param deviceId
+	 * @param sensorId
+	 * @param start			ISO-8601 timestamp.
+	 * @param end			[optional]
+	 * @throws IOException
+	 */
+	public void deleteAck(String deviceId, String sensorId, String start, String end) throws IOException {
+		if (start == null) {
+			throw new IOException("You must specify the start timestamp");
+		}
+		start = encode(start);
+		
+		StringBuilder sb = new StringBuilder(String.format("%s://%s:%d/iot/v1/device/%s/sensor/%s/ack?start=%s&", protocol, host, port, deviceId, sensorId, start));
+		if (end != null) {
+			end = encode(end);
+			sb.append("end=");
+			sb.append(end);
+			sb.append('&');
+		}
+		
+		String url = sb.substring(0, sb.length() - 1);
+		
+		DeleteMethod dm = new DeleteMethod(url);
+		http(dm);
+	}
+	
+	// ======
 	
 	/**
 	 * Insert a snapshot (image) into the data store.
@@ -848,6 +1052,15 @@ public class OpenRESTfulClient {
 		GetMethod gm = new GetMethod(url);
 		
 		return JsonUtils.fromJson(http(gm), Health.class);
+	}
+	
+	// ======
+	public IThing[] getThings() throws IOException {
+		//
+		String url = String.format("%s://%s:%d/iot/v1/thing", protocol, host, port);
+		
+		GetMethod gm = new GetMethod(url);
+		return JsonUtils.fromJson(http(gm), IThing[].class);
 	}
 	
 	// ======

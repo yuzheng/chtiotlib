@@ -1,5 +1,7 @@
 package com.cht.iot.persistence.entity.api;
 
+import java.util.Map;
+
 public class IDevice {	
 	public static final String NO_ID = "0";
 	
@@ -12,6 +14,7 @@ public class IDevice {
 	Float lon;
 	String key;
 	IAttribute[] attributes;
+	Map<String, String> type_extras;
 	
 	public IDevice() {		
 	}
@@ -131,5 +134,13 @@ public class IDevice {
 
 	public void setAttributes(IAttribute[] attributes) {
 		this.attributes = attributes;
+	}
+
+	public Map<String, String> getType_extras() {
+		return type_extras;
+	}
+
+	public void setType_extras(Map<String, String> type_extras) {
+		this.type_extras = type_extras;
 	}	
 }
