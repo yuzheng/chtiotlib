@@ -27,8 +27,8 @@ import com.cht.iot.util.JsonUtils;
 public class OpenRESTfulClientTest {
 	static final Logger LOG = LoggerFactory.getLogger(OpenRESTfulClientTest.class);	
 	
-	final String host = "localhost";//"iot.cht.com.tw";
-	final int port = 8081;//443;//80
+	final String host = "iot.cht.com.tw";
+	final int port = 443;//80
 	final int timeout = 5000;
 	final String apiKey = "PKMZH2M0EXK7XWY51C";//"PKRNA6KCXBZ1JE78P0";	// CHANGE TO YOUR PROJECT API KEY
 	
