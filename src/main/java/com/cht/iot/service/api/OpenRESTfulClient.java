@@ -44,6 +44,8 @@ import com.cht.iot.persistence.entity.data.Rawdata;
 import com.cht.iot.persistence.entity.data.Record;
 import com.cht.iot.util.JsonUtils;
 
+import sun.rmi.runtime.Log;
+
 public class OpenRESTfulClient {
 	static final Logger LOG = LoggerFactory.getLogger(OpenRESTfulClient.class);
 	
@@ -691,6 +693,8 @@ public class OpenRESTfulClient {
 		mp.setContentType("application/json");		
 
 		ByteArrayPart bap = new ByteArrayPart(imageName, imageType, IOUtils.toByteArray(imageBody));
+		String contentType = bap.getContentType();
+		LOG.info("contentType:"+contentType);
 		
 		MultipartRequestEntity mre = new MultipartRequestEntity(new Part[] { mp, bap }, pm.getParams());
 		pm.setRequestEntity(mre);
@@ -1069,7 +1073,7 @@ public class OpenRESTfulClient {
 		final byte[] body;
 		
 		public ByteArrayPart(String name, String contentType, byte[] body) {
-			super(name, contentType, null, null);			
+			super(name, contentType, null, null);
 			this.body = body;
 		}
 
