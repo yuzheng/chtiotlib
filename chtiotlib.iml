@@ -27,14 +27,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="slf4j-android-1.7.12" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="_Users_wangyuzheng__gradle_caches_modules_2_files_2_1_org_slf4j_slf4j_android_1_7_12_16d02a21e200a67e6ae6bbb3367eebe062a4a769_slf4j_android_1_7_12_jar" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-beanutils-1.9.2" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-collections4-4.0" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-httpclient-3.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-codec-1.10" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-io-2.4" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="org.eclipse.paho.client.mqttv3-1.0.2" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="_Users_wangyuzheng__gradle_caches_modules_2_files_2_1_org_eclipse_paho_org_eclipse_paho_client_mqttv3_1_0_2_11752d3f24d1a9deda4533a7ca18d8496417ceeb_org_eclipse_paho_client_mqttv3_1_0_2_jar" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="flexjson-3.3" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="jackson-mapper-asl-1.9.13" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="jackson-core-asl-1.9.13" level="project" />
@@ -44,8 +44,8 @@
     <orderEntry type="library" exported="" scope="PROVIDED" name="tyrus-core-1.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="tyrus-spi-1.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="tyrus-websocket-core-1.1" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="javax.websocket-api-1.1" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="slf4j-api-1.7.12" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="_Users_wangyuzheng__gradle_caches_modules_2_files_2_1_javax_websocket_javax_websocket_api_1_1_13b8cb26dfb76ac8c28294b06b4b8419e22e9ea1_javax_websocket_api_1_1_jar" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="_Users_wangyuzheng__gradle_caches_modules_2_files_2_1_org_slf4j_slf4j_api_1_7_12_8e20852d05222dc286bf1c71d78d0531e177c317_slf4j_api_1_7_12_jar" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-logging-1.1.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="commons-collections-3.2.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="jackson-annotations-2.5.0" level="project" />
